@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'data/list_items.dart';
+import 'models/item.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -8,9 +11,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<Item> items = listItems;
+
   addItem() {}
 
   removeItem() {}
+
+
+  showDetails(Item item){
+    return showDialog(context: context, builder: (context)=>AlertDialog(
+      title: Center(child: Text(item.title)),
+
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children:[
+        Image.network(item.imgUrl),
+         const SizedBox(height: 10),
+          Text(item.subtitle)
+        ]
+      ),
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,24 +48,33 @@ class _HomeScreenState extends State<HomeScreen> {
             centerTitle: true,
           ),
         ],
-        body: ListView(
+        body: ListView.builder(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-          children: List.generate(
-            30,
-            (index) => Card(
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+          itemCount: items.length,
+          itemBuilder: (context, index) => Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: ListTile(
+              onTap: ()=>showDetails(items[index]),
+              contentPadding: const EdgeInsets.all(10),
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(items[index].imgUrl),
               ),
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      'https://store.bellestoreinc.com/wp-content/uploads/2019/09/iphone11-select-2019-family-1.jpeg'),
+              title: Text(
+                items[index].title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
                 ),
-                title: Text('Iphone'),
-                trailing: IconButton(
-                  onPressed: () => removeItem(),
-                  icon: const Icon(Icons.delete, color: Colors.red),
+              ),
+              subtitle: Text(items[index].subtitle),
+              trailing: IconButton(
+                onPressed: () => removeItem(),
+                icon: const Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                  size: 30,
                 ),
               ),
             ),
