@@ -16,9 +16,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   addItem() {
     const newIndex = 1;
-    final item =   (List.of(items)..shuffle()).first;
+    final item = (List.of(items)..shuffle()).first;
     items.insert(newIndex, item);
-    listKey.currentState!.insertItem(newIndex,duration: const Duration(milliseconds: 600));
+    listKey.currentState!
+        .insertItem(newIndex, duration: const Duration(milliseconds: 600));
   }
 
   void removeItem(int index) {
@@ -49,22 +50,31 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () => addItem(),
         child: const Icon(Icons.add),
       ),
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
-            [
-          const SliverAppBar(
-            title: Text('Iphone Series'),
-            centerTitle: true,
-          ),
-        ],
-        body: AnimatedList(
-          key: listKey,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-          initialItemCount: items.length,
-          itemBuilder: (context, index, animation) =>
-              listCard(index, animation),
+      body: CustomScrollView(slivers: [
+         const SliverAppBar(
+          expandedHeight: 150,
+          floating: true,
+          title: Text('Iphone Series'),
+          centerTitle: true,
+          pinned: true,
         ),
-      ),
+        SliverToBoxAdapter(
+
+            child: Column(
+              children: [
+                AnimatedList(
+                  shrinkWrap: true,
+                  primary: false,
+                  key: listKey,
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                  initialItemCount: items.length,
+                  itemBuilder: (context, index, animation) =>
+                      listCard(index, animation),
+                ),
+              ],
+            ),
+        )
+      ]),
     );
   }
 
@@ -111,3 +121,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+// https://marketingedge.com.ng/wp-content/uploads/2021/10/iOS-Logo-2010.jpg
+
+// SliverAppBar
+
+// NestedScrollView(
+//   headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
+//   [
+//   const SliverAppBar(
+//   title: Text('Iphone Series'),
+//   centerTitle: true,
+//   ),
+// ],

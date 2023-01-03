@@ -16,8 +16,8 @@ class MyApp extends StatelessWidget {
       ),
     );
     return const MaterialApp(
-      // home:HomeScreen(), // animated list
-      home: AnimatedIconsImpl(), // animatedIcon impl
+      home:HomeScreen(), // animated list
+     // home: AnimatedIconsImpl(), // animatedIcon impl
     );
   }
 }
