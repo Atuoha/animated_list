@@ -14,13 +14,18 @@ class _HomeScreenState extends State<HomeScreen> {
   final listKey = GlobalKey<AnimatedListState>();
   List<Item> items = listItems;
 
-  addItem() {}
+  addItem() {
+    const newIndex = 0;
+    final item =   (List.of(items)..shuffle()).first;
+    items.insert(newIndex, item);
+    listKey.currentState!.insertItem(newIndex,duration: const Duration(milliseconds: 600));
+  }
 
   void removeItem(int index) {
     items.removeAt(index);
     listKey.currentState!.removeItem(
         index, (context, animation) => listCard(index, animation),
-        duration: const Duration(milliseconds: 400));
+        duration: const Duration(milliseconds: 600));
   }
 
   showDetails(Item item) {
@@ -63,14 +68,18 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  SlideTransition listCard(int index, Animation<double> animation) {
-    return SlideTransition(
-      position: Tween<Offset>(
-        begin: const Offset(-1, 0),
-        end: Offset.zero,
-      ).animate(
-        CurvedAnimation(parent: animation, curve: Curves.easeOut),
-      ),
+  SizeTransition listCard(int index, Animation<double> animation) {
+    // return SlideTransition(
+    //   key: ValueKey(items[index].imgUrl),
+    //   position: Tween<Offset>(
+    //     begin: const Offset(-1, 0),
+    //     end: Offset.zero,
+    //   ).animate(
+    //     CurvedAnimation(parent: animation, curve: Curves.easeOut),
+    //   ),
+    return SizeTransition(
+      sizeFactor: animation,
+      key: ValueKey(items[index].imgUrl),
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(
