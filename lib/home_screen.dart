@@ -15,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Item> items = listItems;
 
   addItem() {
-    const newIndex = 0;
+    const newIndex = 1;
     final item =   (List.of(items)..shuffle()).first;
     items.insert(newIndex, item);
     listKey.currentState!.insertItem(newIndex,duration: const Duration(milliseconds: 600));
