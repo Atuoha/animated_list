@@ -11,26 +11,30 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final GlobalKey listKey = GlobalKey<AnimatedListState>();
+  final listKey = GlobalKey<AnimatedListState>();
   List<Item> items = listItems;
 
   addItem() {}
 
-  removeItem(int index) {
+  void removeItem(int index) {
     items.removeAt(index);
+    listKey.currentState!.removeItem(
+        index, (context, animation) => listCard(index, animation),
+        duration: const Duration(milliseconds: 400));
   }
 
   showDetails(Item item) {
     return showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Center(child: Text(item.title)),
-              content: Column(mainAxisSize: MainAxisSize.min, children: [
-                Image.network(item.imgUrl),
-                const SizedBox(height: 10),
-                Text(item.subtitle)
-              ]),
-            ));
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Center(child: Text(item.title)),
+        content: Column(mainAxisSize: MainAxisSize.min, children: [
+          Image.network(item.imgUrl),
+          const SizedBox(height: 10),
+          Text(item.subtitle)
+        ]),
+      ),
+    );
   }
 
   @override
@@ -52,32 +56,45 @@ class _HomeScreenState extends State<HomeScreen> {
           key: listKey,
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
           initialItemCount: items.length,
-          itemBuilder: (context, index, animation) => Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+          itemBuilder: (context, index, animation) =>
+              listCard(index, animation),
+        ),
+      ),
+    );
+  }
+
+  SlideTransition listCard(int index, Animation<double> animation) {
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(-1, 0),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(parent: animation, curve: Curves.easeOut),
+      ),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: ListTile(
+          onTap: () => showDetails(items[index]),
+          contentPadding: const EdgeInsets.all(10),
+          leading: CircleAvatar(
+            backgroundImage: NetworkImage(items[index].imgUrl),
+          ),
+          title: Text(
+            items[index].title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
             ),
-            child: ListTile(
-              onTap: () => showDetails(items[index]),
-              contentPadding: const EdgeInsets.all(10),
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(items[index].imgUrl),
-              ),
-              title: Text(
-                items[index].title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text(items[index].subtitle),
-              trailing: IconButton(
-                onPressed: () => removeItem(index),
-                icon: const Icon(
-                  Icons.delete,
-                  color: Colors.red,
-                  size: 30,
-                ),
-              ),
+          ),
+          subtitle: Text(items[index].subtitle),
+          trailing: IconButton(
+            onPressed: () => removeItem(index),
+            icon: const Icon(
+              Icons.delete,
+              color: Colors.red,
+              size: 30,
             ),
           ),
         ),
