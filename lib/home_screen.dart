@@ -11,26 +11,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey listKey = GlobalKey<AnimatedListState>();
   List<Item> items = listItems;
 
   addItem() {}
 
-  removeItem() {}
+  removeItem(int index) {
+    items.removeAt(index);
+  }
 
-
-  showDetails(Item item){
-    return showDialog(context: context, builder: (context)=>AlertDialog(
-      title: Center(child: Text(item.title)),
-
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children:[
-        Image.network(item.imgUrl),
-         const SizedBox(height: 10),
-          Text(item.subtitle)
-        ]
-      ),
-    ));
+  showDetails(Item item) {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Center(child: Text(item.title)),
+              content: Column(mainAxisSize: MainAxisSize.min, children: [
+                Image.network(item.imgUrl),
+                const SizedBox(height: 10),
+                Text(item.subtitle)
+              ]),
+            ));
   }
 
   @override
@@ -44,20 +44,21 @@ class _HomeScreenState extends State<HomeScreen> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
             [
           const SliverAppBar(
-            title: Text('Animated List'),
+            title: Text('Iphone Series'),
             centerTitle: true,
           ),
         ],
-        body: ListView.builder(
+        body: AnimatedList(
+          key: listKey,
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-          itemCount: items.length,
-          itemBuilder: (context, index) => Card(
+          initialItemCount: items.length,
+          itemBuilder: (context, index, animation) => Card(
             elevation: 4,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
             child: ListTile(
-              onTap: ()=>showDetails(items[index]),
+              onTap: () => showDetails(items[index]),
               contentPadding: const EdgeInsets.all(10),
               leading: CircleAvatar(
                 backgroundImage: NetworkImage(items[index].imgUrl),
@@ -70,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               subtitle: Text(items[index].subtitle),
               trailing: IconButton(
-                onPressed: () => removeItem(),
+                onPressed: () => removeItem(index),
                 icon: const Icon(
                   Icons.delete,
                   color: Colors.red,
