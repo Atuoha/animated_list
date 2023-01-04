@@ -51,28 +51,45 @@ class _HomeScreenState extends State<HomeScreen> {
         child: const Icon(Icons.add),
       ),
       body: CustomScrollView(slivers: [
-         const SliverAppBar(
+        SliverAppBar(
           expandedHeight: 150,
           floating: true,
-          title: Text('Iphone Series'),
-          centerTitle: true,
           pinned: true,
-        ),
-        SliverToBoxAdapter(
-
-            child: Column(
-              children: [
-                AnimatedList(
-                  shrinkWrap: true,
-                  primary: false,
-                  key: listKey,
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                  initialItemCount: items.length,
-                  itemBuilder: (context, index, animation) =>
-                      listCard(index, animation),
-                ),
+          flexibleSpace: FlexibleSpaceBar(
+            title: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Text('Iphone Series'),
+                SizedBox(width: 10),
+                CircleAvatar(
+                  backgroundImage: NetworkImage(
+                    'https://www.companieshistory.com/wp-content/uploads/2013/06/apple.png',
+                  ),
+                )
               ],
             ),
+            centerTitle: true,
+            background: Image.network(
+              'https://wallpapershome.com/images/pages/ico_h/24143.jpg',
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Column(
+            children: [
+              AnimatedList(
+                shrinkWrap: true,
+                primary: false,
+                key: listKey,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                initialItemCount: items.length,
+                itemBuilder: (context, index, animation) =>
+                    listCard(index, animation),
+              ),
+            ],
+          ),
         )
       ]),
     );
@@ -121,8 +138,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-// https://marketingedge.com.ng/wp-content/uploads/2021/10/iOS-Logo-2010.jpg
 
 // SliverAppBar
 
